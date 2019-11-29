@@ -51,5 +51,14 @@ uint8_t I2c0_BuffRx_Get(uint8_t ucIndex)
 	return I2c0RxBuff[ucIndex];
 }
 
+/*
+*/
+status_t I2c0_Master_Array_Write(uint8_t ucLen, uint8_t *ucArray)
+{
+	status_t send_status;
 
+	LPI2C_DRV_MasterSetSlaveAddr(INST_LPI2C0, ucArray[0], false);
+	send_status = LPI2C_DRV_MasterSendDataBlocking(INST_LPI2C0, (ucArray+1), (ucLen-1), true, OSIF_WAIT_FOREVER);		// Send a packet of data to the bus slave
+	return send_status;
+}
 
