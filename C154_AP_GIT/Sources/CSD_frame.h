@@ -25,6 +25,7 @@
 #define BYTE_CSD_DEV_ADDR       		(uint8_t)1
 #define BYTE_CSD_MSG_ID          		(uint8_t)2
 #define BYTE_CSD_NUMBEROFBYTE 			(uint8_t)3
+#define BYTE_CSD_BYTESTART	 			(uint8_t)4
 
 //Length Define
 #define LEN_MAX_UARTDATA 			251
