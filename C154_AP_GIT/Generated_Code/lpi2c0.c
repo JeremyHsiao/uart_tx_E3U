@@ -85,8 +85,8 @@
 const lpi2c_master_user_config_t lpi2c0_MasterConfig0 = {
   .slaveAddress = 80U,
   .is10bitAddr = false,
-  .operatingMode = LPI2C_FAST_MODE,
-  .baudRate = 400000U,
+  .operatingMode = LPI2C_STANDARD_MODE,//LPI2C_FAST_MODE,
+  .baudRate = 100000U,//400000U,
   .transferType = LPI2C_USING_INTERRUPTS,
   .dmaChannel = 0U,
   .masterCallback = NULL,
