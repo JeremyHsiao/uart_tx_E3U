@@ -23,6 +23,7 @@ void I2c0_Init(void);
 uint8_t I2c0_Master_Byte_Read(uint16_t uSlaveAddr, uint8_t *ucRegister);
 uint8_t I2c0_BuffRx_Get(uint8_t ucIndex);
 status_t I2c0_Master_Array_Write(uint8_t ucLen, uint8_t *ucArray);
+status_t I2c0_Master_Array_Read(uint16_t uSlaveAddr, uint8_t ucLen, uint8_t *ucArray);
 #endif
 
 
