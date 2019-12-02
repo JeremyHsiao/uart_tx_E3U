@@ -65,6 +65,14 @@ status_t I2c0_Master_Array_Read(uint16_t uSlaveAddr, uint8_t ucLen, uint8_t *ucA
 {
 	status_t send_status;
 	LPI2C_DRV_MasterSetSlaveAddr(INST_LPI2C0, uSlaveAddr, false);
+	send_status = LPI2C_DRV_MasterReceiveDataBlocking(INST_LPI2C0, ucArray, ucLen, true, OSIF_WAIT_FOREVER);
+	return send_status;
+}
+
+status_t I2c0_Master_Array_Read_v0(uint16_t uSlaveAddr, uint8_t ucLen, uint8_t *ucArray)
+{
+	status_t send_status;
+	LPI2C_DRV_MasterSetSlaveAddr(INST_LPI2C0, uSlaveAddr, false);
 	send_status = LPI2C_DRV_MasterReceiveData(INST_LPI2C0, ucArray, ucLen, true);
 	return send_status;
 }
