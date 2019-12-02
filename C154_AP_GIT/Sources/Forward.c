@@ -241,13 +241,12 @@ bool Forward_DataPreprocess(void)
     	    		if(gtforward_info.tforward_package.u8device_address == (DEV_ADDRESS + WRITE))
     	    		{
     	    			// I2C write
-            	    	if((gtforward_info.tforward_package.u8message_id<=max_i2c_write_byte) &&
-            	    		(END_BYTE==gtUart1_rx.ucRxBuffer[BYTE_CSD_BYTESTART+gtforward_info.tforward_package.u8message_id]))
+    	    			uint8_t write_len = gtforward_info.tforward_package.u8message_id;
+            	    	if((write_len<=max_i2c_write_byte) &&
+            	    		(END_BYTE==gtUart1_rx.ucRxBuffer[BYTE_CSD_BYTESTART+write_len]))
             	    	{
             	    		status_t i2c_status;
-            	    		i2c_status = I2c0_Master_Array_Write(
-            	    						(gtforward_info.tforward_package.u8message_id),
-											(gtUart1_rx.ucRxBuffer+BYTE_CSD_BYTESTART));
+            	    		i2c_status = I2c0_Master_Array_Write(write_len,(gtUart1_rx.ucRxBuffer+BYTE_CSD_BYTESTART));
                    	    	if(i2c_status==STATUS_SUCCESS)
                    	    	{
                    	    		Uart1_Data_Send(&u8ack, 1);
@@ -258,63 +257,21 @@ bool Forward_DataPreprocess(void)
     	    		else if(gtforward_info.tforward_package.u8device_address == (DEV_ADDRESS + READ))
     	    		{
     	    			// I2C Read
-    	    			uint8_t read_data[max_i2c_read_byte+1];
-            	    	if((gtforward_info.tforward_package.u8message_id<=max_i2c_read_byte) &&
+    	    			uint8_t read_data[max_i2c_read_byte+1], read_len = gtforward_info.tforward_package.u8message_id;
+            	    	if((read_len<=max_i2c_read_byte) &&
             	    		(END_BYTE==gtUart1_rx.ucRxBuffer[BYTE_CSD_BYTESTART+1]))
             	    	{
             	    		status_t i2c_status;
             	    		uint8_t uSlaveAddr = gtUart1_rx.ucRxBuffer[BYTE_CSD_BYTESTART];
-            	    		i2c_status = I2c0_Master_Array_Read(uSlaveAddr,
-            	    				(gtforward_info.tforward_package.u8message_id),read_data+1);
-                   	    	if(i2c_status==STATUS_SUCCESS)
+            	    		i2c_status = I2c0_Master_Array_Read(uSlaveAddr,read_len,read_data+1);
+                  	    	if(i2c_status==STATUS_SUCCESS)
                    	    	{
-                   	    		read_data[0] = u8ack;
-                  	    		Uart1_Data_Send(read_data, (gtforward_info.tforward_package.u8message_id)+1);
+                   	    		read_data[0] = u8ack;			// setup ACK at begin position
+                  	    		Uart1_Data_Send(read_data, (read_len+1));
                        	    	return true;
                    	    	}
              	    	}
     	    		}
-//        	    	if((gtforward_info.tforward_package.u8message_id>0)&&(gtforward_info.tforward_package.u8message_id<=8))
-//        	    	{
-//        	    		status_t i2c_status;
-//        	    		uint8_t read_back;
-//        	    		const uint8_t uSlaveAddr = 0x1B, ucRegister = 0x00;
-//
-//        	    		uint8_t  set_page0[] = { uSlaveAddr, ucRegister, 0x00 };
-//        	    		uint8_t  set_page1[] = { uSlaveAddr, ucRegister, 0x01 };
-//        	    		i2c_status = I2c0_Master_Array_Write(sizeof(set_page0),set_page0);
-//        	    		read_back = I2c0_Master_Byte_Read(uSlaveAddr, (uint8_t*)&ucRegister);
-//        	    		Uart1_Data_Send((uint8_t*)&read_back, 1);
-//
-//        	    		i2c_status = I2c0_Master_Array_Write(sizeof(set_page1),set_page1);
-//        	    		read_back = I2c0_Master_Byte_Read(uSlaveAddr, (uint8_t*)&ucRegister);
-//        	    		Uart1_Data_Send((uint8_t*)&read_back, 1);
-//
-//        	    		/*
-//
-//       	    			status_t i2c_status;
-//        	    		uint8_t read_back;
-//        	    		const uint8_t uSlaveAddr = 0x1B, ucRegister = 0x00;
-//
-//        	    		uint8_t  set_page0[] = { uSlaveAddr, ucRegister, 0x00 };
-//        	    		uint8_t  set_page1[] = { uSlaveAddr, ucRegister, 0x01 };
-//        	    		i2c_status = I2c0_Master_Array_Write(sizeof(set_page0),set_page0);
-//        	    		read_back = I2c0_Master_Byte_Read(uSlaveAddr, (uint8_t*)&ucRegister);
-//        	    		Uart1_Data_Send((uint8_t*)&read_back, 1);
-//
-//        	    		i2c_status = I2c0_Master_Array_Write(sizeof(set_page1),set_page1);
-//        	    		read_back = I2c0_Master_Byte_Read(uSlaveAddr, (uint8_t*)&ucRegister);
-//        	    		Uart1_Data_Send((uint8_t*)&read_back, 1);
-//
-//
-//////
-//        	    		i2c_status = I2c0_Master_Array_Write((gtforward_info.tforward_package.u8message_id),
-//        	    												(gtUart1_rx.ucRxBuffer+BYTE_CSD_MSG_ID+2));
-//        	    		Uart1_Data_Send((gtUart1_rx.ucRxBuffer+BYTE_CSD_MSG_ID+2), (gtforward_info.tforward_package.u8message_id));
-//        	    		Uart1_Data_Send((uint8_t*)i2c_status, sizeof(uint16_t));
-//    */
-//        	    		return true;
-//        	    	}
     	    	}
     	    break;
     	}
